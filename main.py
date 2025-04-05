@@ -11,7 +11,12 @@ def ler_grafo(arquivo):
     matriz = []
     for linha in linhas:
         valores = linha.split()
-        linha_convertida = [INF if v == "INF" else int(v) for v in valores]
+        linha_convertida = []
+        for v in valores:
+            if v == "INF":
+                linha_convertida.append(INF)
+            else:
+                linha_convertida.append(int(v))
         matriz.append(linha_convertida)
 
     return np.array(matriz)
@@ -23,7 +28,15 @@ def floyd_warshall(grafo):
     distancias = grafo.copy()  # Para não modificar o original, se eu só faço dist = grafo acontece uma passagem por referência
     
     # Inicialização da matriz de predecessores
-    pred = [[j if grafo[i][j] != INF and i != j else None for j in range(V)] for i in range(V)]
+    pred = []
+    for i in range(V):
+        linha_pred = []
+        for j in range(V):
+            if grafo[i][j] != INF and i != j:
+                linha_pred.append(j)
+            else:
+                linha_pred.append(None)
+        pred.append(linha_pred)
 
     for k in range(V):
         for i in range(V):
@@ -50,7 +63,13 @@ def reconstruir_caminho(origem, destino, prox_vertice):
 def imprimir_matriz(matriz):
     """O(V²)"""
     for linha in matriz:
-        print(" ".join(f"{v:4}" if v != INF else "INF" for v in linha))
+        valores_formatados = []
+        for v in linha:
+            if v != INF:
+                valores_formatados.append(f"{v:4}")
+            else:
+                valores_formatados.append("INF")
+        print(" ".join(valores_formatados))
 
 if __name__ == "__main__":
     arquivo_grafo = "grafos/grafo_medio.txt"
